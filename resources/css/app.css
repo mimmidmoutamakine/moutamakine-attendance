@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global base */
+body {
+    @apply bg-slate-50 text-slate-800 antialiased;
+}
+
+/* Nice scrollbar (desktop) */
+*::-webkit-scrollbar {
+    width: 8px;
+}
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.5);
+    border-radius: 9999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+    background: rgba(100, 116, 139, 0.8);
+}
+
+/* Reusable “card” for sections */
+.section-card {
+    @apply bg-white rounded-3xl 
+           border border-slate-200/60 
+           shadow-[0_10px_30px_rgba(15,23,42,0.06)]
+           backdrop-blur-sm
+           transition-all duration-200 ease-out;
+}
+
+.section-card:hover {
+    @apply shadow-[0_18px_45px_rgba(15,23,42,0.08)];
+}
+/* Gradient main button (we’ll also use this in the button component) */
+.btn-gradient {
+    @apply inline-flex items-center justify-center 
+           px-5 py-2.5 
+           rounded-2xl 
+           text-sm font-semibold tracking-wide text-white
+           bg-gradient-to-tr from-orange-500 via-rose-500 to-indigo-500
+           shadow-md
+           transition-all duration-200 ease-out;
+}
+
+.btn-gradient:hover {
+    @apply shadow-xl scale-[1.02];
+}
+
+.btn-gradient:active {
+    @apply scale-[0.97];
+}
+
+/* Subtle section title */
+.section-title {
+    @apply text-lg font-semibold text-slate-900 mb-3;
+}
+
+/* Micro Animation */
+main {
+    animation: fadeInUp 0.35s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

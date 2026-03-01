@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class StudentAttendance extends Model
+{
+
+    protected $table = 'student_attendance';
+    
+    protected $fillable = [
+        'group_id',
+        'student_id',
+        'teacher_id',
+        'attendance_date',
+        'status',
+    ];
+
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
+    }
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
+
+    public function teacher()
+    {
+        return $this->belongsTo(Teacher::class);
+    }
+}
