@@ -5,7 +5,7 @@
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo + brand -->
-                <div class="shrink-0 flex items-center">
+                <div class="hidden sm:flex shrink-0 items-center">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
                         <x-application-logo class="block h-9 w-auto" />
                         <span class="hidden sm:inline text-sm font-semibold text-orange-400 tracking-wide">
@@ -89,6 +89,21 @@
                                 <span>Teacher Attendance</span>
                             </div>
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.teachers.index')" :active="request()->routeIs('admin.teachers.*')">
+                            <div class="flex items-center gap-2">
+                                {{-- Teacher icon --}}
+                                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"
+                                        stroke="currentColor" stroke-width="1.7"
+                                        stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M4 20a8 8 0 0 1 16 0"
+                                        stroke="currentColor" stroke-width="1.7"
+                                        stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Teachers</span>
+                            </div>
+                        </x-nav-link>
                     @endif
 
                     {{-- Teacher links --}}
@@ -111,93 +126,182 @@
                     @endif
                 </div>
             </div>
-
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button
-                            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-xl text-gray-500 dark:text-gray-300 bg-white dark:bg-white border border-slate-200 hover:text-gray-700 dark:hover:text-gray-100 focus:outline-none transition">
-                            <div>{{ Auth::user()->name }}</div>
+        <div class="hidden sm:flex sm:items-center sm:ml-6">
+            <x-dropdown align="right" width="48">
+                {{-- TRIGGER: only the ninja avatar button, no name text --}}
+                <x-slot name="trigger">
+                    <button
+                        class="flex items-center rounded-full border-2 border-orange-300 bg-gradient-to-br from-orange-500 to-pink-500 p-[2px]
+                            text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:ring-offset-2 focus:ring-offset-white">
+                        <span
+                            class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-white text-base font-semibold">
+                            {{-- simple ninja-ish icon (mask) --}}
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="9" fill="#0f172a"/>
+                                <rect x="6" y="9" width="12" height="4" rx="2" fill="#e5e7eb"/>
+                                <circle cx="10" cy="11" r="0.9" fill="#0f172a"/>
+                                <circle cx="14" cy="11" r="0.9" fill="#0f172a"/>
+                            </svg>
+                        </span>
+                    </button>
+                </x-slot>
 
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                          clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </button>
-                    </x-slot>
+                {{-- CONTENT: this is ONLY the dropdown panel, and it is CLOSED
+                    BEFORE the rest of the layout, so nothing else goes inside it --}}
+                <x-slot name="content">
+                    {{-- Header inside dropdown: name + role --}}
+                    <div class="px-4 py-3 border-b border-gray-100">
+                        <p class="text-sm font-medium text-gray-900">
+                            {{ Auth::user()->name }}
+                        </p>
+                        <p class="text-xs text-gray-500">
+                            {{ ucfirst($role ?? 'admin') }}
+                        </p>
+                    </div>
 
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            Profile
+                    {{-- Profile link --}}
+                    <x-dropdown-link :href="route('profile.edit')">
+                        {{ __('Profile') }}
+                    </x-dropdown-link>
+
+                    {{-- Logout --}}
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <x-dropdown-link href="{{ route('logout') }}"
+                                        onclick="event.preventDefault(); this.closest('form').submit();">
+                            {{ __('Log Out') }}
                         </x-dropdown-link>
+                    </form>
+                </x-slot>
+            </x-dropdown>
+        </div>
 
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
+        {{-- MOBILE HEADER ROW --}}
+        <div class="flex items-center justify-between w-full sm:hidden">
 
-                            <x-dropdown-link :href="route('logout')"
-                                             onclick="event.preventDefault(); this.closest('form').submit();">
-                                Log out
-                            </x-dropdown-link>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
-            </div>
+            {{-- LEFT: Avatar --}}
+            <x-dropdown align="left" width="48">
+                <x-slot name="trigger">
+                    <button
+                        class="flex items-center rounded-full border-2 border-orange-300 bg-gradient-to-br from-orange-500 to-pink-500 p-[2px]
+                            focus:outline-none focus:ring-2 focus:ring-orange-300">
+                        <span
+                            class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-white">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="9" fill="#0f172a"/>
+                                <rect x="6" y="9" width="12" height="4" rx="2" fill="#e5e7eb"/>
+                                <circle cx="10" cy="11" r="0.9" fill="#0f172a"/>
+                                <circle cx="14" cy="11" r="0.9" fill="#0f172a"/>
+                            </svg>
+                        </span>
+                    </button>
+                </x-slot>
 
-            <!-- Hamburger (mobile) -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open"
-                        class="inline-flex items-center justify-center p-2 rounded-xl text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none transition">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{ 'hidden': open, 'inline-flex': !open }"
-                              class="inline-flex"
-                              stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{ 'hidden': !open, 'inline-flex': open }"
-                              class="hidden"
-                              stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
+                <x-slot name="content">
+                    <div class="px-4 py-3 border-b border-gray-100">
+                        <p class="text-sm font-medium text-gray-900">
+                            {{ Auth::user()->name }}
+                        </p>
+                        <p class="text-xs text-gray-500">
+                            {{ ucfirst(auth()->user()->role ?? 'admin') }}
+                        </p>
+                    </div>
+
+                    <x-dropdown-link :href="route('profile.edit')">
+                        Profile
+                    </x-dropdown-link>
+
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <x-dropdown-link href="{{ route('logout') }}"
+                            onclick="event.preventDefault(); this.closest('form').submit();">
+                            Log Out
+                        </x-dropdown-link>
+                    </form>
+                </x-slot>
+            </x-dropdown>
+
+            {{-- CENTER: Logo --}}
+            <a href="{{ route('dashboard') }}">
+                <x-application-logo class="block h-8 w-auto" />
+            </a>
+
+            {{-- RIGHT: Burger --}}
+            <button @click="open = ! open"
+                    class="inline-flex items-center justify-center p-2 rounded-xl text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none transition">
+                <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                    <path :class="{ 'hidden': open, 'inline-flex': !open }"
+                        class="inline-flex"
+                        stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 6h16M4 12h16M4 18h16" />
+                    <path :class="{ 'hidden': !open, 'inline-flex': open }"
+                        class="hidden"
+                        stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+        </div>
         </div>
     </div>
 
     <!-- Responsive Menu (mobile) -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-        @php
-            $role = auth()->user()->role ?? null;
-        @endphp
+            @php
+                $role = auth()->user()->role ?? null;
+            @endphp
 
-        {{-- Admin links (mobile) --}}
-        @if ($role === 'admin')
-            <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
-                Dashboard
-            </x-responsive-nav-link>
+            {{-- Admin links (mobile) --}}
+            @if ($role === 'admin')
+                <x-responsive-nav-link
+                    :href="route('admin.dashboard')"
+                    :active="request()->routeIs('admin.dashboard')"
+                >
+                    Dashboard
+                </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('admin.students.index')" :active="request()->routeIs('admin.students.*')">
-                Students
-            </x-responsive-nav-link>
+                <x-responsive-nav-link
+                    :href="route('admin.students.index')"
+                    :active="request()->routeIs('admin.students.*')"
+                >
+                    Students
+                </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('admin.groups.index')" :active="request()->routeIs('admin.groups.*')">
-                Groups
-            </x-responsive-nav-link>
+                <x-responsive-nav-link
+                    :href="route('admin.groups.index')"
+                    :active="request()->routeIs('admin.groups.*')"
+                >
+                    Groups
+                </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('admin.teacher-attendance.index')" :active="request()->routeIs('admin.teacher-attendance.*')">
-                Teacher Attendance
-            </x-responsive-nav-link>
-        @endif
+                <x-responsive-nav-link
+                    :href="route('admin.teacher-attendance.index')"
+                    :active="request()->routeIs('admin.teacher-attendance.*')"
+                >
+                    Teacher Attendance
+                </x-responsive-nav-link>
 
-        {{-- Teacher links (mobile) --}}
-        @if ($role === 'teacher')
-            <x-responsive-nav-link :href="route('teacher.dashboard')" :active="request()->routeIs('teacher.*')">
-                My Groups
-            </x-responsive-nav-link>
-        @endif
-    </div>
+                <x-responsive-nav-link
+                    :href="route('admin.teachers.index')"
+                    :active="request()->routeIs('admin.teachers.*')"
+                >
+                    {{ __('Teachers') }}
+                </x-responsive-nav-link>
+            @endif
+
+            {{-- Teacher links (mobile) --}}
+            @if ($role === 'teacher')
+                <x-responsive-nav-link
+                    :href="route('teacher.dashboard')"
+                    :active="request()->routeIs('teacher.*')"
+                >
+                    My Groups
+                </x-responsive-nav-link>
+            @endif
+        </div>
+    </div> 
 </nav>

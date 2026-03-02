@@ -41,9 +41,9 @@ Route::get('/create-first-admin', function () {
     }
 
     User::create([
-        'name'     => 'Ouissal BOURAS',
-        'email'    => 'ouissalw0@gmail.com',
-        'password' => bcrypt('ninja02'), // you can change this password
+        'name'     => 'mimmid',
+        'email'    => 'aataouicandidature@gmail.com',
+        'password' => bcrypt('mimmid02'), // you can change this password
         'role'     => 'admin',
     ]);
 

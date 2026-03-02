@@ -65,7 +65,7 @@
 
                         <div class="flex items-center justify-end gap-2">
                             <a href="{{ route('admin.students.index') }}"
-                               class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
+                               class="px-4 py-2 text-sm text-gray-600 ">
                                 Cancel
                             </a>
 
