@@ -7,6 +7,7 @@ use App\Http\Controllers\Teacher\AttendanceController;
 use App\Http\Controllers\Admin\TeacherAttendanceController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminTeacherController;
+use App\Models\User; // put this at the very top of web.php, under other "use" lines
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -29,6 +30,25 @@ Route::get('/dashboard', function () {
 
     return redirect()->route('teacher.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+
+
+// TEMP route – remove after running once!
+Route::get('/create-first-admin', function () {
+    // safety: don't create duplicate if it already exists
+    if (User::where('email', 'ouissalw0@gmail.com')->exists()) {
+        return 'Admin already exists.';
+    }
+
+    User::create([
+        'name'     => 'Ouissal BOURAS',
+        'email'    => 'ouissalw0@gmail.com',
+        'password' => bcrypt('ninja02'), // you can change this password
+        'role'     => 'admin',
+    ]);
+
+    return 'Admin user created successfully!';
+});
 
 // Admin routes
 Route::middleware(['auth', 'admin'])->group(function () {
