@@ -35,11 +35,6 @@ Route::get('/dashboard', function () {
 
 // TEMP route – remove after running once!
 Route::get('/create-first-admin', function () {
-    // safety: don't create duplicate if it already exists
-    if (User::where('email', 'ouissalw0@gmail.com')->exists()) {
-        return 'Admin already exists.';
-    }
-
     User::create([
         'name'     => 'mimmid',
         'email'    => 'aataouicandidature@gmail.com',
